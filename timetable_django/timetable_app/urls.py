@@ -1,7 +1,9 @@
-from django.urls import path, include
+from django.urls import path, include, register_converter
 
 from timetable_app import views
+from timetable_app.converters import DateConverter
+register_converter(DateConverter, 'date')
 
 urlpatterns = [
-    path('day/', views.EventListView.as_view()),
+    path('day/<date:mydate>', views.EventDayView.as_view()),
 ]
