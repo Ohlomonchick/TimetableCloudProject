@@ -6,4 +6,5 @@ register_converter(DateConverter, 'date')
 
 urlpatterns = [
     path('day/<date:mydate>', views.EventDayView.as_view()),
+    path('week/<date:mydate>', views.EventWeekView.as_view()),
 ]
