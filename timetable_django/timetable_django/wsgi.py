@@ -15,8 +15,7 @@ from django.core.wsgi import get_wsgi_application
 
 
 CURRENT_DIR: Path = Path(__file__).resolve().parent
-BASE_DIR: Path = CURRENT_DIR.parent
-ENV_FILE_PATH: Path = BASE_DIR / ".env"
+ENV_FILE_PATH: Path = CURRENT_DIR.parent / ".env"
 
 ENV_CONFIG_LOADED: bool = False
 if os.path.exists(ENV_FILE_PATH):

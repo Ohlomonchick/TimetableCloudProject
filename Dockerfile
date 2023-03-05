@@ -12,4 +12,6 @@ RUN /opt/venv/bin/pip install pip --upgrade && \
     /opt/venv/bin/pip install pip -r requirements.txt && \
     chmod +x entrypoint.sh
 
+EXPOSE 8000
+
 CMD [ "/app/entrypoint.sh" ]

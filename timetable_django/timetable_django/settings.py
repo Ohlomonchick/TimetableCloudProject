@@ -100,41 +100,40 @@ TEMPLATES: List[Dict[str, Any]] = [
 WSGI_APPLICATION = 'timetable_django.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DATABASES: Dict[str, Dict[str, str]] = {}
-
-if ENV_CONFIG_LOADED:
+if ENV_CONFIG_LOADED and str(os.environ.get("POSTGRES_READY")) == '1':
     DB_USERNAME: Optional[str] = os.environ.get("POSTGRES_USER")
     DB_PASSWORD: Optional[str] = os.environ.get("POSTGRES_PASSWORD")
     DB_DATABASE: Optional[str] = os.environ.get("POSTGRES_DB")
     DB_HOST: Optional[str] = os.environ.get("POSTGRES_HOST")
     DB_PORT: Optional[str] = os.environ.get("POSTGRES_PORT")
 
-    if not all((SECRET_KEY, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT)):
-        raise ImportError(".env configuration is loaded but configured wrong")
+    if not all((DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT)):
+        raise ImportError(".env configuration is loaded but db configured wrong")
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_DATABASE,
-            'USER': DB_USERNAME,
-            'PASSWORD': DB_PASSWORD,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-        }
-    }
+    NAME: str = DB_DATABASE
+    USER: str = DB_USERNAME
+    PASSWORD: str = DB_PASSWORD
+    HOST: str = DB_HOST
+    PORT: str = DB_PORT
 else:
-    DATABASES =  {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': 'dimonchick',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
+    NAME: str = 'postgres'
+    USER: str = 'postgres'
+    PASSWORD: str = 'dimonchick'
+    HOST: str = 'localhost'
+    PORT: str = '5432'
+
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+DATABASES: Dict[str, Dict[str, str]] = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': NAME,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': PORT,
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

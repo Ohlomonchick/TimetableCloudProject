@@ -2,22 +2,23 @@ version: "3.11"
 services:
   timetable_django_web:
     depends_on:
-      - localhost
+      - postgres_db
     build:
       context: .
       dockerfile: Dockerfile
+    expose:
+      - 8000
     image: timetable_django:v1.0
     environment:
-      - PORT=8020
+      - PORT=8000
     env_file:
       - ./timetable_django/.env
     ports:
-      - "8001:8020"
+      - "8000:8000"
     command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
   
-  localhost:
+  postgres_db:
     image: postgres
-    command: -p 5432
     env_file:
       - ./timetable_django/.env
     expose:
