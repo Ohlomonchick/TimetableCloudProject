@@ -9,28 +9,46 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import (
+        Literal,
+        Optional,
+        Dict,
+        List,
+        Any
+    )
 
+import os
 from pathlib import Path
 
+from .wsgi import ENV_CONFIG_LOADED
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-af=#-8mxh=k@+$=_10ie%^untc0nd1efpnr-fw_(e=zz2qc3p$'
+SECRET_KEY: Optional[str] = \
+    os.environ.get("DJANGO_SECRET_KEY") \
+    if ENV_CONFIG_LOADED else \
+    'django-insecure-af=#-8mxh=k@+$=_10ie%^untc0nd1efpnr-fw_(e=zz2qc3p$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG: bool = \
+    str(os.environ.get("DEBUG")) == "1" \
+    if ENV_CONFIG_LOADED else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List = []
 
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS: List[str] = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,11 +64,11 @@ INSTALLED_APPS = [
     'timetable_app',
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS: List[str] = [
     'http://localhost:8080'
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE: List[str] = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -63,7 +81,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'timetable_django.urls'
 
-TEMPLATES = [
+TEMPLATES: List[Dict[str, Any]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -82,25 +100,45 @@ TEMPLATES = [
 WSGI_APPLICATION = 'timetable_django.wsgi.application'
 
 
+if ENV_CONFIG_LOADED and str(os.environ.get("POSTGRES_READY")) == '1':
+    DB_USERNAME: Optional[str] = os.environ.get("POSTGRES_USER")
+    DB_PASSWORD: Optional[str] = os.environ.get("POSTGRES_PASSWORD")
+    DB_DATABASE: Optional[str] = os.environ.get("POSTGRES_DB")
+    DB_HOST: Optional[str] = os.environ.get("POSTGRES_HOST")
+    DB_PORT: Optional[str] = os.environ.get("POSTGRES_PORT")
+
+    if not all((DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT)):
+        raise ImportError(".env configuration is loaded but db configured wrong")
+
+    NAME: str = DB_DATABASE
+    USER: str = DB_USERNAME
+    PASSWORD: str = DB_PASSWORD
+    HOST: str = DB_HOST
+    PORT: str = DB_PORT
+else:
+    NAME: str = 'postgres'
+    USER: str = 'postgres'
+    PASSWORD: str = 'dimonchick'
+    HOST: str = 'localhost'
+    PORT: str = '5432'
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
+DATABASES: Dict[str, Dict[str, str]] = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'dimonchick',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': NAME,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS: List[Dict[str, str]] = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -123,9 +161,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
 
-USE_I18N = True
+USE_I18N: Literal[True] = True
 
-USE_TZ = True
+USE_TZ: Literal[True] = True
 
 
 # Static files (CSS, JavaScript, Images)
