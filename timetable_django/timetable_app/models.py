@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from datetime import timedelta
+from django.contrib.auth.models import AbstractUser
 
 
 class Category(models.Model):
@@ -21,6 +22,14 @@ class CommonGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class User(AbstractUser):
+    participant_groups = models.ManyToManyField(
+        CommonGroup,
+        related_name='users',
+        blank=True,
+    )
 
 
 class Event(models.Model):
@@ -48,7 +57,7 @@ class Event(models.Model):
         blank=True,
     )
     master = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         related_name='events',
         on_delete=models.CASCADE,
         blank=True,
