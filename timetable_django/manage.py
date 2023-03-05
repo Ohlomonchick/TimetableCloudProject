@@ -3,8 +3,10 @@
 import os
 import sys
 
+import dotenv
 
-def main():
+
+def main() -> None:
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'timetable_django.settings')
     try:
@@ -19,4 +21,7 @@ def main():
 
 
 if __name__ == '__main__':
+    from timetable_django.wsgi import ENV_CONFIG_LOADED
+    if ENV_CONFIG_LOADED:
+        dotenv.read_dotenv()
     main()

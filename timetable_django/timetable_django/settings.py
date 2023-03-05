@@ -9,28 +9,46 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import (
+        Literal,
+        Optional,
+        Dict,
+        List,
+        Any
+    )
 
+import os
 from pathlib import Path
 
+from .wsgi import ENV_CONFIG_LOADED
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-af=#-8mxh=k@+$=_10ie%^untc0nd1efpnr-fw_(e=zz2qc3p$'
+SECRET_KEY: Optional[str] = \
+    os.environ.get("DJANGO_SECRET_KEY") \
+    if ENV_CONFIG_LOADED else \
+    'django-insecure-af=#-8mxh=k@+$=_10ie%^untc0nd1efpnr-fw_(e=zz2qc3p$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG: bool = \
+    str(os.environ.get("DEBUG")) == "1" \
+    if ENV_CONFIG_LOADED else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List = []
 
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS: List[str] = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,11 +64,11 @@ INSTALLED_APPS = [
     'timetable_app',
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS: List[str] = [
     'http://localhost:8080'
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE: List[str] = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -63,7 +81,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'timetable_django.urls'
 
-TEMPLATES = [
+TEMPLATES: List[Dict[str, Any]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -84,23 +102,44 @@ WSGI_APPLICATION = 'timetable_django.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+DATABASES: Dict[str, Dict[str, str]] = {}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'tmp_user',
-        'PASSWORD': 'dimonchick',
-        'HOST': 'localhost',
-        'PORT': '5432',
+if ENV_CONFIG_LOADED:
+    DB_USERNAME: Optional[str] = os.environ.get("POSTGRES_USER")
+    DB_PASSWORD: Optional[str] = os.environ.get("POSTGRES_PASSWORD")
+    DB_DATABASE: Optional[str] = os.environ.get("POSTGRES_DB")
+    DB_HOST: Optional[str] = os.environ.get("POSTGRES_HOST")
+    DB_PORT: Optional[str] = os.environ.get("POSTGRES_PORT")
+
+    if not all((SECRET_KEY, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT)):
+        raise ImportError(".env configuration is loaded but configured wrong")
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_DATABASE,
+            'USER': DB_USERNAME,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
     }
-}
-
+else:
+    DATABASES =  {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'dimonchick',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS: List[Dict[str, str]] = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -123,9 +162,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
 
-USE_I18N = True
+USE_I18N: Literal[True] = True
 
-USE_TZ = True
+USE_TZ: Literal[True] = True
 
 
 # Static files (CSS, JavaScript, Images)

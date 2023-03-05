@@ -1,0 +1,43 @@
+version: "3.11"
+services:
+  timetable_django_web:
+    depends_on:
+      - localhost
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: timetable_django:v1.0
+    environment:
+      - PORT=8020
+    env_file:
+      - ./timetable_django/.env
+    ports:
+      - "8001:8020"
+    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
+  
+  localhost:
+    image: postgres
+    command: -p 5432
+    env_file:
+      - ./timetable_django/.env
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  redis_db:
+    image: redis
+    restart: always
+    expose:
+      - 6380
+    ports:
+      - "6380:6380"
+    volumes:
+        - redis_data:/data
+    entrypoint: redis-server --appendonly yes --port 6380
+
+volumes:
+  postgres_data:
+  redis_data:
