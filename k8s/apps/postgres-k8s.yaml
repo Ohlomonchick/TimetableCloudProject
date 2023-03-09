@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timetable-k8s-django-deployment
+  labels:
+    app: django
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: timetable-backend-app
+        image: ghcr.io/ohlomonchick/timetablecloudproject:main
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: timetable-k8s-django-env
+        env:
+          - name: PORT
+            value: "8000"
+        ports:
+        - containerPort: 8000
+      imagePullSecrets:
+        - name: ghcr-login-secret
