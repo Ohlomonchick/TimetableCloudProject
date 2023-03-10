@@ -5,7 +5,7 @@ metadata:
   labels:
     app: django
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: django
@@ -24,6 +24,10 @@ spec:
         env:
           - name: PORT
             value: "8000"
+          - name: POSTGRES_HOST
+            value: postgres
+          - name: POSTGRES_READY
+            value: "1"
         ports:
         - containerPort: 8000
       imagePullSecrets:

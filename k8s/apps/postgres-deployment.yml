@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:10.5
+        imagePullPolicy: "IfNotPresent"
+        envFrom:
+          - secretRef:
+              name: timetable-k8s-django-env
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+          # mountPath within the container
+        - name: postgres-pvc
+          mountPath: "/var/lib/postgresql/data/:Z"
+      volumes:
+          # mapped to the PVC
+        - name: postgres-pvc
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
