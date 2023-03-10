@@ -17,10 +17,10 @@ from django.core.wsgi import get_wsgi_application
 CURRENT_DIR: Path = Path(__file__).resolve().parent
 ENV_FILE_PATH: Path = CURRENT_DIR.parent / ".env"
 
-ENV_CONFIG_LOADED: bool = False
-if os.path.exists(ENV_FILE_PATH):
-    dotenv.read_dotenv(str(ENV_FILE_PATH))
-    ENV_CONFIG_LOADED = True
+ENV_CONFIG_LOADED: bool = True
+# if os.path.exists(ENV_FILE_PATH):
+#     dotenv.read_dotenv(str(ENV_FILE_PATH))
+#     ENV_CONFIG_LOADED = True
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'timetable_django.settings')
 
