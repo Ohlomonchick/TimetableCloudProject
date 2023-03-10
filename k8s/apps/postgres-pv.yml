@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pv
+  name: postgres2-pv
   labels:
     type: local
 spec:
@@ -11,4 +11,4 @@ spec:
   capacity:
     storage: 2Gi
   hostPath:
-    path: "/data/mypostgresdata/"
+    path: "/data/mypostgresdata2/"

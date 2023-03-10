@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:10.5
+        image: postgres:15.2
         imagePullPolicy: "IfNotPresent"
         envFrom:
           - secretRef:
@@ -24,13 +24,13 @@ spec:
           name: postgres
         volumeMounts:
           # mountPath within the container
-        - name: postgres-pvc
+        - name: postgres2-pvc
           mountPath: "/var/lib/postgresql/data/:Z"
       volumes:
           # mapped to the PVC
-        - name: postgres-pvc
+        - name: postgres2-pvc
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: postgres2-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -42,5 +42,6 @@ spec:
   type: ClusterIP
   ports:
     - port: 5432
+    - port: 8000
   selector:
     app: postgres

@@ -17,7 +17,7 @@ spec:
       containers:
       - name: timetable-backend-app
         image: ghcr.io/ohlomonchick/timetablecloudproject:main
-        imagePullPolicy: Always
+        imagePullPolicy: "Always"
         envFrom:
           - secretRef:
               name: timetable-k8s-django-env
@@ -26,8 +26,6 @@ spec:
             value: "8000"
           - name: POSTGRES_HOST
             value: postgres
-          - name: POSTGRES_READY
-            value: "1"
         ports:
         - containerPort: 8000
       imagePullSecrets:
