@@ -60,7 +60,9 @@ class EventDayView(APIView):
         start_of_day = datetime.combine(mydate, datetime.min.time(), tzinfo=TZ)
         end_of_day = datetime.combine(mydate, datetime.max.time(), tzinfo=TZ)
         q = Q()
-        user_groups = request.user.participant_groups.all()
+        user_groups = []
+        if request.user.is_authenticated:
+            user_groups = request.user.participant_groups.all()
         events = []
         if user_groups:
             for group in user_groups:
@@ -85,22 +87,29 @@ class EventWeekView(APIView):
 
     def get(self, request, mydate):
 
+        events = []
+        everyday_events = []
+        user_groups = []
         q = Q()
-        for group in request.user.participant_groups.all():
-            q |= Q(participant_groups=group)
+        if request.user.is_authenticated:
+            user_groups = request.user.participant_groups.all()
 
-        events = Event.objects.filter(
-            q & (
-            Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year) |
-            Q(repeat=timedelta(weeks=1)) |
-            Q(repeat=timedelta(weeks=2))
-            ))
+        if user_groups:
+            for group in user_groups:
+                q |= Q(participant_groups=group)
 
-        everyday_events = Event.objects.filter(
-            q & (
-            Q(repeat=timedelta(days=1)) &
-            ~Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year)
-            ))
+            events = Event.objects.filter(
+                q & (
+                Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year) |
+                Q(repeat=timedelta(weeks=1)) |
+                Q(repeat=timedelta(weeks=2))
+                ))
+
+            everyday_events = Event.objects.filter(
+                q & (
+                Q(repeat=timedelta(days=1)) &
+                ~Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year)
+                ))
 
         response_data = {}
         for i in range(7):

@@ -51,4 +51,6 @@ class UserSerializer(WritableNestedModelSerializer, serializers.ModelSerializer)
             "id",
             "username",
             "participant_groups",
+            "is_staff",
+            "groups"
         )
