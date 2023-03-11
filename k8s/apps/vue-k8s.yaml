@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: django
+  name: timetable-k8s-vue-deployment
   labels:
-    app: django
+    app: vue
 spec:
   replicas: 3
   strategy:
@@ -12,41 +12,35 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: django
+      app: vue
   template:
     metadata:
       labels:
-        app: django
+        app: vue
     spec:
       containers:
-      - name: django
-        image: ghcr.io/ohlomonchick/timetablecloudproject:main
+      - name: vue
+        image: ghcr.io/ohlomonchick/timetablecloudproject-frontend:master
         imagePullPolicy: "Always"
-        envFrom:
-          - secretRef:
-              name: timetable-k8s-django-env
         env:
           - name: PORT
-            value: "8000"
-          - name: POSTGRES_HOST
-            value: postgres
+            value: "8080"
+          - name: VUE_APP_DJANGO_HOST
+            value: http://10.100.62.175
         ports:
-        - containerPort: 8000
-          name: django
+        - containerPort: 8080
 #      imagePullSecrets:
 #        - name: ghcr-login-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: django
+  name: vue
   labels:
-    app: django
+    app: vue
 spec:
   type: ClusterIP
   ports:
-    - port: 8000
+    - port: 8080
   selector:
-    app: django
-
-
+    app: vue
