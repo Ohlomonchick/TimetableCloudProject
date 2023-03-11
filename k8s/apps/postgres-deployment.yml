@@ -42,6 +42,5 @@ spec:
   type: ClusterIP
   ports:
     - port: 5432
-    - port: 8000
   selector:
     app: postgres

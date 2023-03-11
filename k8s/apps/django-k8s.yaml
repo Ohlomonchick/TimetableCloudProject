@@ -5,7 +5,7 @@ metadata:
   labels:
     app: django
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: django
@@ -28,7 +28,20 @@ spec:
             value: postgres
         ports:
         - containerPort: 8000
-      imagePullSecrets:
-        - name: ghcr-login-secret
+#      imagePullSecrets:
+#        - name: ghcr-login-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django
+  labels:
+    app: django
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+  selector:
+    app: django
 
 

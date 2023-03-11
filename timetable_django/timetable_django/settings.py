@@ -43,7 +43,7 @@ DEBUG: bool = \
     str(os.environ.get("DEBUG")) == "1" \
     if ENV_CONFIG_LOADED else True
 
-ALLOWED_HOSTS: List = []
+ALLOWED_HOSTS: List = ['*']
 
 
 # Application definition
