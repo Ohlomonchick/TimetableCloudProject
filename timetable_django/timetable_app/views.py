@@ -117,12 +117,10 @@ class EventWeekView(APIView):
                 Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year) |
                 Q(repeat=timedelta(weeks=1)) |
                 Q(repeat=timedelta(weeks=2))
-                ))
+                ) & ~Q(repeat=timedelta(days=1)))
 
             everyday_events = Event.objects.filter(
-                q & (
-                Q(repeat=timedelta(days=1)) &
-                ~Q(start__week=mydate.isocalendar()[1], start__year=mydate.today().year)
+                q & Q(repeat=timedelta(days=1)
                 ))
 
         response_data = {}
