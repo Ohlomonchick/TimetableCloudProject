@@ -18,9 +18,9 @@ CURRENT_DIR: Path = Path(__file__).resolve().parent
 ENV_FILE_PATH: Path = CURRENT_DIR.parent / ".env"
 
 ENV_CONFIG_LOADED: bool = True
-# if os.path.exists(ENV_FILE_PATH):
-#     dotenv.read_dotenv(str(ENV_FILE_PATH))
-#     ENV_CONFIG_LOADED = True
+if os.path.exists(ENV_FILE_PATH) and str(os.environ.get("POSTGRES_READY", "0")) != '1':
+    dotenv.read_dotenv(str(ENV_FILE_PATH))
+    ENV_CONFIG_LOADED = True
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'timetable_django.settings')
 

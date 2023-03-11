@@ -100,7 +100,7 @@ TEMPLATES: List[Dict[str, Any]] = [
 WSGI_APPLICATION = 'timetable_django.wsgi.application'
 
 
-if ENV_CONFIG_LOADED and str(os.environ.get("POSTGRES_READY")) == '1':
+if ENV_CONFIG_LOADED and str(os.environ.get("POSTGRES_READY", "0")) == '1':
     DB_USERNAME: Optional[str] = os.environ.get("POSTGRES_USER")
     DB_PASSWORD: Optional[str] = os.environ.get("POSTGRES_PASSWORD")
     DB_DATABASE: Optional[str] = os.environ.get("POSTGRES_DB")
@@ -177,3 +177,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "timetable_app.User"
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+}

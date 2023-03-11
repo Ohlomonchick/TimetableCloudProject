@@ -18,8 +18,19 @@ from datetime import datetime, timedelta
 TZ = timezone('Europe/Moscow')
 
 
+class IsAdminUserOrReadOnly(permissions.IsAdminUser):
+
+    def has_permission(self, request, view):
+        is_admin = super(
+            IsAdminUserOrReadOnly,
+            self).has_permission(request, view)
+        # Python3: is_admin = super().has_permission(request, view)
+        return request.method in permissions.SAFE_METHODS or is_admin
+
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -32,16 +43,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class CommonGroupViewSet(viewsets.ModelViewSet):
     serializer_class = CommonGroupSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
     queryset = CommonGroup.objects.all()
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
+    permission_classes = [IsAdminUserOrReadOnly]
     queryset = Category.objects.all()
 
 
 class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
