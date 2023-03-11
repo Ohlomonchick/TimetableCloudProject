@@ -15,6 +15,6 @@ cd /app/
 /opt/venv/bin/python manage.py makemigrations --noinput
 /opt/venv/bin/python manage.py migrate --noinput
 /opt/venv/bin/python manage.py createsuperuser --username "$SUPERUSER_NAME" --email "$SUPERUSER_EMAIL" --noinput || true
-#/opt/venv/bin/python manage.py collectstatic --noinput
+/opt/venv/bin/python manage.py collectstatic --noinput
 
 /opt/venv/bin/python manage.py runserver 0.0.0.0:8000

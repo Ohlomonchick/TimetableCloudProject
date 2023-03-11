@@ -136,3 +136,4 @@ dmypy.json
 
 # PyCharm
 .idea/
+/timetable_django/timetable_django/static/
