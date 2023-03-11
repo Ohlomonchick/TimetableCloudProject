@@ -68,6 +68,8 @@ CORS_ALLOWED_ORIGINS: List[str] = [
     'http://localhost:8080'
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE: List[str] = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -185,5 +187,4 @@ REST_FRAMEWORK = {
 }
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')

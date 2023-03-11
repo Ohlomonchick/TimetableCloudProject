@@ -15,4 +15,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('day/<date:mydate>', views.EventDayView.as_view()),
     path('week/<date:mydate>', views.EventWeekView.as_view()),
+    path('userbyname/<str:username>', views.UserViewSet.as_view({'put': 'update', 'get': 'list'}))
 ]

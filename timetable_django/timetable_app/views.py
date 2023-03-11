@@ -34,11 +34,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
+        username = self.kwargs.get("username")
 
-        if not pk:
-            return []
-
-        return User.objects.filter(pk=pk)
+        if pk:
+            return User.objects.filter(pk=pk)
+        elif username:
+            return User.objects.filter(username=username)
 
 
 class CommonGroupViewSet(viewsets.ModelViewSet):
@@ -59,7 +60,6 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
-
         if not pk:
             return []
 

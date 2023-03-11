@@ -6,6 +6,10 @@ metadata:
     app: django
 spec:
   replicas: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: django
