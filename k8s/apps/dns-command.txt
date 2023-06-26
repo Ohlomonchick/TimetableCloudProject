@@ -1,0 +1,1 @@
+Get-DnsClientNrptRule | Where-Object {$_.Namespace -eq 'timetable.altlms.com'} | Remove-DnsClientNrptRule -Force; Add-DnsClientNrptRule -Namespace "timetable.altlms.com" -NameServers "172.17.203.22"

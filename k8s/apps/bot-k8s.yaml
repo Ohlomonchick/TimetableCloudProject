@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timetable-k8s-bot
+  labels:
+    app: bot
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+    spec:
+      containers:
+      - name: bot
+        image: ghcr.io/alexandrshevchenko1/bot:master
+        imagePullPolicy: "Always"
+        env:
+          - name: DJANGO_HOST
+            value: 'timetable.altlms.com'
+          - name: DJANGO_PORT
+            value: ':80/'
+          - name: DJANGO_PROTOCOL
+            value: 'http://'
+#        ports:
+#        - containerPort: 8080
+#      imagePullSecrets:
+#        - name: ghcr-login-secret
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: bot
+#  labels:
+#    app: bot
+#spec:
+#  type: ClusterIP
+#  ports:
+#    - port: 8080
+#  selector:
+#    app: bot

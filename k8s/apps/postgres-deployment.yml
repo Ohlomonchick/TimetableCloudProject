@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
-  replicas: 3
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -28,13 +28,13 @@ spec:
           name: postgres
         volumeMounts:
           # mountPath within the container
-        - name: postgres2-pvc
+        - name: postgres-pvc
           mountPath: "/var/lib/postgresql/data/:Z"
       volumes:
           # mapped to the PVC
-        - name: postgres2-pvc
+        - name: postgres-pvc
           persistentVolumeClaim:
-            claimName: postgres2-pvc
+            claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: Service

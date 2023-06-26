@@ -15,7 +15,20 @@ services:
       - ./timetable_django/.env
     ports:
       - "8000:8000"
-    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
+    command: sh -c "chmod +x /app/migrate.sh && /app/entrypoint.sh"
+
+  vue-frontend:
+    build: ./timetable_vue
+    expose:
+      - 8080
+    image: timetable_vue:v1.0
+    environment:
+      - PORT=8080
+    env_file:
+      - ./timetable_django/.env
+    ports:
+      - "8080:8080"
+    command: sh -c "npm run serve"
   
   postgres_db:
     image: postgres
